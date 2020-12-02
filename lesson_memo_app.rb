@@ -15,5 +15,14 @@ if memo_type == "1"
     csv << content
   end
 elsif memo_type == '2'
-  puts "編集したい拡張子を除いたファイルを入力してください"
+  puts "編集したいファイルを拡張子を除いて入力してください"
+  file_name = gets.to_s.chomp
+  data_list = CSV.read("#{file_name}.csv")
+  puts data_list
+  puts "編集したい内容を記入してください"
+  puts "完了したらCtrl + Dを　おします"
+  edit_content = readlines
+  CSV.open("#{file_name}.csv", "wb") do |csv|
+    csv << edit_content
+  end
 end
