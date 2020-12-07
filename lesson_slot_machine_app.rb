@@ -1,11 +1,11 @@
 coin = 100
 point = 0
+quit_game = 3
 coin_select = [10, 30, 50]
 # ポイントやコインの初期値
-COST_OF_COIN = 30
 NORMAL_COIN = 50
-SEVEN_COIN = 100
 NORMAL_POINT = 50
+SEVEN_COIN = 100
 SEVEN_POINT = 100
 
 def count_coin_amount(slot_num)
@@ -21,26 +21,29 @@ end
 def count_point_amount(slot_num)
   add_points = 0
   if slot_num == 7
-    add_points = SEVEN_COIN
+    add_points = SEVEN_POINT
   else
     add_points = NORMAL_POINT
   end
   return add_points
 end
 
-while true do
+loop do
   puts "---------"
   puts "残りコイン数#{coin}"
   puts "ポイント#{point}"
   puts "何コイン入れますか？"
   puts "1(10コイン) 2(30コイン) 3(50コイン) 4(やめとく)"
   puts "---------"
-
-  coin_addition_select = gets.to_i
-
-  unless coin_addition_select == 4
-    coin += coin_select[coin_addition_select - 1]
-    coin -= COST_OF_COIN
+  
+  while true do
+    post_coin_select = gets.to_i - 1
+    break if post_coin_select == 0 || post_coin_select == 1 || post_coin_select == 2 || post_coin_select == quit_game
+    puts "正しい値を入力してください"
+  end
+  
+  unless post_coin_select == quit_game
+    coin -= coin_select[post_coin_select]
     numbers = Array.new(3) { Array.new(3, nil) }
     total_get_coins = 0
     total_get_points = 0
@@ -101,13 +104,27 @@ while true do
     end
 
     if total_get_points > 0 && total_get_coins > 0
-      coin += total_get_coins
-      point += total_get_points
+      # 入れたコインの枚数に応じてボーナスポイント・コインを支給
+      if coin_select[post_coin_select] == coin_select[1]
+        total_get_coins *= 3
+        total_get_points *= 3
+        coin += total_get_coins
+        point += total_get_points
+      elsif coin_select[post_coin_select] == coin_select[2]
+        total_get_coins *= 5
+        total_get_points *= 5
+        coin += total_get_coins
+        point += total_get_points
+      else
+        coin += total_get_coins
+        point += total_get_points
+      end
       puts "#{total_get_points}ポイント獲得！"
       puts "#{total_get_coins}コイン獲得!"
     end
 
-    if coin < COST_OF_COIN
+    # 残りコインが10コイン未満の場合
+    if coin < coin_select[0]
       puts "コインがなくなりました"
       puts "//GAME OVER//"
       break
